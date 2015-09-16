@@ -1,0 +1,8 @@
+{
+    "name": "bonk007/gambar",
+    "description": "This is an image manipulation library",
+    "require": {
+        "php": ">=5.3.0",
+        "another-vendor/package": "1.*"
+    }
+}
