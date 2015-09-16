@@ -1,5 +1,6 @@
 <?php
 namespace Gambar;
+use Gambar\GambarException;
 
 class Gambar {
 
@@ -22,12 +23,12 @@ class Gambar {
 
     public function load_font($fontpath) {
         if(!file_exists($fontpath)){
-            throw new Exception("Error Processing Request", 1);
+            throw new GambarException("Error Processing Request", 1);
             exit;
         }
         $pinfo = pathinfo($fontpath);
         if($pinfo['extension'] != 'ttf'){
-            throw new Exception("Error Processing Request", 1);
+            throw new GambarException("Error Processing Request", 1);
             exit;
         }
         echo __DIR__;
@@ -36,7 +37,7 @@ class Gambar {
     public function frame($weights, $color = '#FFFFFF') {
         $res_stream = $this->get_resource('resource', 'stream');
         if(is_null($res_stream)){
-            throw new Exception("Error Processing Request", 1);
+            throw new GambarException("Error Processing Request", 1);
             exit;
         }
         $res_sizes  = $this->get_resource('resource', 'sizes');
@@ -112,7 +113,7 @@ class Gambar {
         $height     = 0;
         $res_size   = $this->get_resource('resource', 'sizes');
         if(is_null($res_size)){
-            throw new Exception("Error Processing Request", 1);
+            throw new GambarException("Error Processing Request", 1);
             exit;
         }
         $res_w      = $res_size['width'];
@@ -199,7 +200,7 @@ class Gambar {
         $resource = $this->get_resource('resource', 'stream');
         $destination = $this->get_resource('destination', 'stream');
         if(is_null($resource) || is_null($destination)){
-            throw new Exception("Error Processing Request", 1);
+            throw new GambarException("Error Processing Request", 1);
             exit;
         }
         $res_coords = $this->get_resource('resource', 'coordinates');
@@ -220,7 +221,7 @@ class Gambar {
             $copy = imagecopy($destination, $resource, $des_x, $des_y, $res_x, $res_y, $res_w, $res_h);
         }
         if(!$copy){
-            throw new Exception("Error Processing Request", 1);
+            throw new GambarException("Error Processing Request", 1);
             exit;
         }
         return $copy;
@@ -230,7 +231,7 @@ class Gambar {
         $resource = $this->get_resource('resource', 'stream');
         $destination = $this->get_resource('destination', 'stream');
         if(is_null($resource) || is_null($destination)){
-            throw new Exception("Error Processing Request", 1);
+            throw new GambarException("Error Processing Request", 1);
             exit;
         }
         $res_coords = $this->get_resource('resource', 'coordinates');
@@ -247,7 +248,7 @@ class Gambar {
         $des_h = $des_sizes['height'];
         $resampled = imagecopyresampled($destination, $resource, $des_x, $des_y, $res_x, $res_y, $des_w, $des_h, $res_w, $res_h);
         if(!$resampled){
-            throw new Exception("Error Processing Request", 1);
+            throw new GambarException("Error Processing Request", 1);
             exit;
         }
         return $resampled;
@@ -257,24 +258,25 @@ class Gambar {
         $extension  = $this->get_resource('resource', 'extension');
         $stream     = $this->get_resource('destination', 'stream');
         if(is_null($extension)){
-            throw new Exception("Error Processing Request", 1);
+            throw new GambarException("Error Processing Request", 1);
             exit;
         }
         if(is_null($stream)){
-            throw new Exception("Error Processing Request", 1);
+            throw new GambarException("Error Processing Request", 1);
             exit;
         }
         if(is_null($directory) && is_null($newname)){
             if($show === true){
-                throw new Exception("Error Processing Request", 1);
+                throw new GambarException("Error Processing Request", 1);
                 exit;
             }
-            $directory  = './tmp';
+            // $directory  = './tmp';
+            $directory  = sys_get_temp_dir();
             $newname    = 'tmp_' . md5(microtime()) . $extension;
         }
         if(!is_dir($directory)){
             if(!mkdir($directory, 777)){
-                throw new Exception("Error Processing Request", 1);
+                throw new GambarException("Error Processing Request", 1);
                 exit;
             }
         }
@@ -343,18 +345,18 @@ class Gambar {
 
     private function is_supported($resource) {
         if(!file_exists($resource)){
-            throw new Exception("Error Processing Request", 1);
+            throw new GambarException("Error Processing Request", 1);
             exit;
         }
         $attributes = $this->get_attributes($resource);
         if(is_null($attributes)){
-            throw new Exception("Error Processing Request", 1);
+            throw new GambarException("Error Processing Request", 1);
             exit;
         }
         $mimes  = array('image/jpeg','image/png','image/bmp','image/gif');
         $mime   = $attributes['mime'];
         if(!in_array($mime, $mimes)){
-            throw new Exception("Error Processing Request", 1);
+            throw new GambarException("Error Processing Request", 1);
             exit;
         }
         $extension  = str_replace('image/','',$mime);
@@ -362,7 +364,7 @@ class Gambar {
         $this->set_resource('resource', 'extension', $extension);
         $stream     = call_user_func('imagecreatefrom' . $extension, $resource);
         if(!$stream){
-            throw new Exception("Error Processing Request", 1);
+            throw new GambarException("Error Processing Request", 1);
             exit;
         }
         $this->set_resource('resource', 'stream', $stream);
@@ -394,7 +396,7 @@ class Gambar {
             $res_sizes = $this->get_resource('resource', 'sizes');
             if(is_null($key) && is_null($value)){
                 if(is_null($res_sizes)){
-                    throw new Exception("Error Processing Request", 1);
+                    throw new GambarException("Error Processing Request", 1);
                     exit;
                 }
                 $width  = $res_sizes['width'];
