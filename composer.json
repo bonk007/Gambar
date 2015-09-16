@@ -17,5 +17,10 @@
         "psr-4": {
             "Gambar\\": "src/"
         }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-beta"
+        }
     }
 }
