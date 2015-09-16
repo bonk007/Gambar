@@ -15,7 +15,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Gambar\\": "src/"
+            "Gambar\\Gambar": "src/"
         }
     },
     "extra": {
