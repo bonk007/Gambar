@@ -15,8 +15,8 @@ composer update
 ```
 composer install
 ```
-#Save Image
 ##Laravel
+###Save as New Image
 ```
 Route::get('/', function () {
     // return view('welcome');
