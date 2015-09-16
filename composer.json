@@ -1,8 +1,22 @@
 {
     "name": "bonk007/gambar",
     "description": "This is an PHP image manipulation library",
+    "homepage": "http://github.com/bonk007/gambar",
+    "license" : "MIT",
     "require": {
         "php": ">=5.3.0",
         "another-vendor/package": "1.*"
+    },
+    "authors" : [
+        {
+            "name": "Ayi Muhammad Iqbal Nasuha",
+            "email": "bonk007@gmail.com",
+            "homepage": "http://www.ibonk.net"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Gambar\\": "src/"
+        }
     }
 }
