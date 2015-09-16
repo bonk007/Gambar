@@ -4,8 +4,7 @@
     "homepage": "http://github.com/bonk007/gambar",
     "license" : "MIT",
     "require": {
-        "php": ">=5.3.0",
-        "another-vendor/package": "1.*"
+        "php": ">=5.3.0"
     },
     "authors" : [
         {
