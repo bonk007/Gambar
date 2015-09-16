@@ -14,8 +14,8 @@
         }
     ],
     "autoload": {
-        "psr-4": {
-            "Gambar\\Gambar": "src/"
+        "classmap": {
+            "Gambar\\Gambar": "src/Gambar.php"
         }
     },
     "extra": {
