@@ -275,7 +275,7 @@ class Gambar {
             $newname    = 'tmp_' . md5(microtime()) . $extension;
         }
         if(!is_dir($directory)){
-            if(!mkdir($directory, 755)){
+            if(!mkdir($directory, 777, true)){
                 throw new GambarException("Error Processing Request", 1);
                 exit;
             }
