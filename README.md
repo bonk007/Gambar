@@ -1,5 +1,8 @@
 # Gambar
 
+##Instalation
+### Via Composer
+Open your composer.json file.
 ```
 "require-dev":{
 ...
@@ -7,21 +10,28 @@
 ...
 }
 ```
-
+Open your terminal or command line and do composer update
 ```
 composer update
 ```
 
+##How to use
+###with PSR-x autoload
 ```
-composer install
+<?php
+use Gambar/Gambar;
 ```
-##Laravel
-###Save as New Image
+###Native
+Open src/Gambar.php and src/GambarException.php and set the following lines as the comments
 ```
-Route::get('/', function () {
-    // return view('welcome');
-    $dir = base_path('public');
-    $src = $dir . '/0.jpg';
-    Gambar\Gambar::set($src)->save($dir, 'new');
-});
+<?php
+// namespace Gambar;
+// use Gambar\GambarException;
+...
+```
+then add include, include_once, require, or require_once into your sourcecode
+```
+<?php
+require_once '<some directory>/src/Gambar.php';
+require_once '<some directory>/src/GambarException.php';
 ```
