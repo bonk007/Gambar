@@ -1,6 +1,6 @@
 <?php
-namespace Gambar;
-use Gambar\GambarException;
+// namespace Gambar;
+// use Gambar\GambarException;
 
 class Gambar {
 
@@ -31,7 +31,7 @@ class Gambar {
             throw new GambarException("Error Processing Request", 1);
             exit;
         }
-        echo __DIR__;
+        $this->font = $fontpath;
     }
 
     public function frame($weights, $color = '#FFFFFF') {
@@ -58,7 +58,7 @@ class Gambar {
         return self::set($temp, true);
     }
 
-    public function watermark($watermark, $position, $height, $alpha = 100) {
+    public function watermark($watermark, $position, $height, $color = '#FFFFFF', $alpha = 100) {
         // unimplemented
         /*
          * switch main image into destination
@@ -103,6 +103,58 @@ class Gambar {
         $this->resampled();
         $this->create($directory = null, $newname = null, $quality = 100, true);
         exit;
+    }
+
+    private function init_wm_positions($value) {
+        $res_sizes = $this->get_resource('resource', 'sizes');
+        $des_sizes = $this->get_resource('destination', 'sizes');
+        if(is_null($res_sizes) || is_null($des_sizes)){
+            throw new GambarException("Error Processing Request", 1);
+            exit;
+        }
+        $res_w = $res_sizes['width'];
+        $res_h = $res_sizes['height'];
+        $des_w = $des_sizes['width'];
+        $des_h = $des_sizes['height'];
+        switch(strtoupper($value)){
+            case 'TR':
+                $des_x = $res_w - $des_w;
+                $des_y = 0;
+            break;
+            case 'TC':
+                $des_x = ($res_w - $des_w)/2;
+                $des_y = 0;
+            break;
+            case 'TL':
+                $des_x = 0;
+                $des_y = 0;
+            break;
+            case 'CR':
+                $des_x = $res_w - $des_w;
+                $des_y = ($res_h - $des_h)/2;
+            break;
+            case 'CC':
+                $des_x = ($res_w - $des_w)/2;
+                $des_y = ($res_h - $des_h)/2;
+            break;
+            case 'CL':
+                $des_x = 0;
+                $des_y = ($res_h - $des_h)/2;
+            break;
+            case 'BR':
+                $des_x = $res_w - $des_w;
+                $des_y = $res_h - $des_h;
+            break;
+            case 'BC':
+                $des_x = ($res_w - $des_w)/2;
+                $des_y = $res_h - $des_h;
+            break;
+            case 'BL':
+                $des_x = 0;
+                $des_y = $res_h - $des_h;
+            break;
+        }
+        return array('x' => $des_x, 'y' => $des_y);
     }
 
     private function generate_sizes($value) {
@@ -196,7 +248,7 @@ class Gambar {
         return ($value / 10) - 10;
     }
 
-    private function copy($transparency = 100) {
+    private function copy($type = 'copy', $transparency = 100) {
         $resource = $this->get_resource('resource', 'stream');
         $destination = $this->get_resource('destination', 'stream');
         if(is_null($resource) || is_null($destination)){
@@ -212,10 +264,7 @@ class Gambar {
         $des_coords = $this->get_resource('destination', 'coordinates');
         $des_x = $des_coords['x'];
         $des_y = $des_coords['y'];
-        if($transparency < 100){
-            /*
-                Other operations
-            */
+        if($type == 'merge'){
             $copy = imagecopymerge($destination, $resource, $des_x, $des_y, $res_x, $res_y, $res_w, $res_h, $transparency);
         }else{
             $copy = imagecopy($destination, $resource, $des_x, $des_y, $res_x, $res_y, $res_w, $res_h);
@@ -254,8 +303,8 @@ class Gambar {
         return $resampled;
     }
 
-    private function create($directory = null, $newname = null, $quality = 100, $show = false) {
-        $extension  = $this->get_resource('resource', 'extension');
+    private function create($directory = null, $newname = null, $extension = null, $quality = 100, $show = false) {
+        $extension  = (is_null($extension)) ? $this->get_resource('resource', 'extension') : $extension;
         $stream     = $this->get_resource('destination', 'stream');
         if(is_null($extension)){
             throw new GambarException("Error Processing Request", 1);
@@ -275,7 +324,7 @@ class Gambar {
             $newname    = 'tmp_' . md5(microtime()) . $extension;
         }
         if(!is_dir($directory)){
-            if(!mkdir($directory, 0755)){
+            if(!mkdir($directory, 0755, true)){
                 throw new GambarException("Error Processing Request", 1);
                 exit;
             }
@@ -285,6 +334,7 @@ class Gambar {
         }
         $target = rtrim($directory, '/') . '/' . $newname . '.' .$extension;
         $created= false;
+
         switch($extension) {
             case 'jpeg':
                 if($show === true){
@@ -438,6 +488,14 @@ class Gambar {
             }
         }
         return $returned;
+    }
+
+    private function get_font() {
+        $fontpath   = __DIR__ . '/../font/BRLNSR.TTF';
+        if(!is_null($this->font)){
+            $fontpath= $this->font;
+        }
+        return $fontpath;
     }
 
 }
