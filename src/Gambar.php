@@ -1,7 +1,10 @@
 <?php
-// namespace Gambar;
-// use Gambar\GambarException;
-
+namespace Gambar;
+use Gambar\GambarException;
+/*
+Author. Ayi Muhammad Iqbal Nasuha
+Repo. https://github.com/bonk007/gambar
+*/
 class Gambar {
 
     private $resource   = array();
